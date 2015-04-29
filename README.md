@@ -57,3 +57,4 @@ MEDIAMATH_API_TOKEN=123412341234
 MEDIAMATH_API_USERNAME=example@example.com
 MEDIAMATH_API_PASSWORD=password
 ```
+then run ```npm test```
