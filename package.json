@@ -1,0 +1,32 @@
+{
+  "name": "node-mediamath",
+  "version": "1.0.0",
+  "description": "Node SDK for Media Math's Reporting Api",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AgencyPMG/node-mediamath.git"
+  },
+  "keywords": [
+    "MediaMath",
+    "Api"
+  ],
+  "author": "AgencyPMG",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AgencyPMG/node-mediamath/issues"
+  },
+  "homepage": "https://github.com/AgencyPMG/node-mediamath",
+  "dependencies": {
+    "request": "^2.55.0",
+    "super-config": "0.0.8",
+    "tough-cookie": "^0.12.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "mocha": "^2.2.4"
+  }
+}
