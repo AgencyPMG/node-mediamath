@@ -12,7 +12,8 @@ NOTE: Even though this library will work with browserify or any client-side Java
 it is not recommended due to the Media Math's login system which depends on cookies
 and lack of csrf protection opens up the API to XSS attacks.
 
-NOTE: This is an unfinished Api, currently only the reporting beta endpoint is supported.
+NOTE: This is an unfinished Api, currently only the
+reporting beta endpoint is supported. Contributions welcome!
 
 ## Advanced Setup
 You can switch the defaults of the app by using the ```Base.Defaults```
