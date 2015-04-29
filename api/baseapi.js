@@ -94,7 +94,12 @@ BaseApi.prototype.getUri = function(method, getparameters) {
         return util.format('%s?%s', method, qs);
     }
 
-    return util.format('%s/%s?%s', this.options.baseUrl, method, qs);
+    return util.format(
+        '%s/%s/%s/%s?%s',
+        this.options.baseUrl,
+        this.getApiScope(),
+        this.options.version,
+        method, qs);
 }
 
 /**
@@ -104,6 +109,17 @@ BaseApi.prototype.getUri = function(method, getparameters) {
  */
 BaseApi.prototype.finishRequest = function(callback) {
     return function(error, response, body) {
+        if (error) {
+            return callback(error);
+        }
+        if ('application/json' === response.headers['content-type']) {
+            try {
+                body = JSON.parse(body);
+            } catch(e) {
+                return callback(e, body);
+            }
+            return callback(null, body);
+        }
         callback(error, body);
     }
 }
@@ -120,7 +136,11 @@ BaseApi.prototype.login = function(auth, callback) {
         return callback('No username/password defined');
     }
     auth.retries++;
-    var uri = util.format('%s/login',this.options.baseUrl);
+    var uri = util.format(
+        '%s/api/%s/login',
+        this.options.baseUrl,
+        this.options.version
+    );
 
     request({
         method: 'POST',
@@ -141,7 +161,14 @@ BaseApi.prototype.login = function(auth, callback) {
         callback(null, auth);
     });
     this.log(uri);
+}
 
+/**
+ * The scope of the api, this method should be overwritten by child classes
+ * @return {string} defaults to 'api'
+ */
+BaseApi.prototype.getApiScope= function() {
+    return 'api';
 }
 
 /**
@@ -156,9 +183,10 @@ BaseApi.prototype.log = function(message) {
 }
 
 BaseApi.defaultOptions = {
-    baseUrl: 'https://api.mediamath.com/api/v1',
+    baseUrl: 'https://api.mediamath.com',
     apiToken: '',
     auth: null,
+    version: 'v1',
     debug: false
 }
 
