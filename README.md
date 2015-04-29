@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/AgencyPMG/node-mediamath.svg)](https://travis-ci.org/AgencyPMG/node-mediamath)
+
 # node-mediamath
 Node SDK for Media Math's Reporting Api.
 
