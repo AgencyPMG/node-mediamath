@@ -45,13 +45,19 @@ var auth = new MediaMath.Auth('example@example.com', 'pw_goes_here');
 var auth = new MediaMath.Auth('124981290i1294081029');
 
 var reports = new MediaMath.ReportsBeta({
-    auth: auth,
     debug: true
 });
 
-reports.getReport(function(data) {
-    console.log(data);
+reports.getListOfReports({auth: auth}, function(error, data) {
+    console.log(error, data);
 })
+
+reports.getMetadataForReport(
+    'https://api.mediamath.com/reporting/v1/std/geo',
+    {auth: auth},
+    function(error, data) {
+        console.log(error, data);
+});
 ```
 
 ## Testing
