@@ -8,8 +8,9 @@ npm install node-mediamath
 ```
 
 ## How to use
-
-
+NOTE: Even though this library will work with browserify or any client-side Javascript,
+it is not recommended due to the Media Math's login system which depends on cookies
+and lack of csrf protection opens up the API to XSS attacks.
 
 ## Advanced Setup
 You can switch the defaults of the app by using the ```Base.Defaults```

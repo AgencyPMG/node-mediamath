@@ -12,7 +12,6 @@ var password = process.env.MEDIAMATH_API_PASSWORD || '';
 
 describe('BaseApi', function() {
 
-
     BaseApi.defaultOptions.apiToken = apitoken;
 
     describe('#constructor', function() {
@@ -57,5 +56,25 @@ describe('BaseApi', function() {
             b.get('site_lists', {auth: auth}, done);
         });
     });
+
+    describe('#getUri', function() {
+        it('should return a full url from a partial url', function() {
+            var b = new BaseApi();
+            assert.strictEqual(b.options.baseUrl + '/method?', b.getUri('method'));
+        });
+
+        it('should return a full url', function() {
+            var b = new BaseApi();
+            var url = b.options.baseUrl + '/method';
+            assert.strictEqual(url + '?', b.getUri(url));
+        })
+    });
+
+    describe('#getApiScope', function() {
+        it('should return string "api"', function() {
+            var b = new BaseApi();
+            assert.strictEqual('api', b.getApiScope());
+        })
+    })
 
 });
