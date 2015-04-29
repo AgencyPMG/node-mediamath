@@ -112,6 +112,12 @@ BaseApi.prototype.finishRequest = function(callback) {
         if (error) {
             return callback(error);
         }
+
+        if(response.statusCode >= 400) {
+            this.log('MediaMathError: ' + response.statusCode + ' ' + body);
+            return callback('MediaMathError: ' + response.statusCode);
+        }
+
         if ('application/json' === response.headers['content-type']) {
             try {
                 body = JSON.parse(body);
@@ -120,6 +126,11 @@ BaseApi.prototype.finishRequest = function(callback) {
             }
             return callback(null, body);
         }
+
+        if (-1 !== body.indexOf('Authentication Required')) {
+            return callback('MediaMathError: Not Logged In');
+        }
+
         callback(error, body);
     }
 }

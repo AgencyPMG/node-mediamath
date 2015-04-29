@@ -46,16 +46,52 @@ describe('BaseApi', function() {
                 }
                 done(auth.isLoggedIn() ? null : 'Should be logged in, incorrect cookies');
             });
+        });
+
+        it('should not allow to login without a username/password', function(done) {
+            var b = new BaseApi();
+            var auth = new Auth();
+            b.login(auth, function(error) {
+                if (!error) {
+                    return done('should have thrown not logged in error');
+                }
+                done();
+            })
         })
+
     });
 
     describe('#get', function() {
+        var b = new BaseApi();
+        var auth = new Auth(username, password);
+
         it('should get a site list', function(done) {
-            var b = new BaseApi();
-            var auth = new Auth(username, password);
             b.get('site_lists', {auth: auth}, done);
         });
+
+        it('should return a 404 error', function(done) {
+            b.get('404', {auth: auth}, function(error) {
+                if (!error) {
+                    return done('call did not return 404');
+                }
+                done();
+            });
+        })
+
     });
+
+    describe('#post', function() {
+        it('should execute a failed call', function(done) {
+            var b = new BaseApi();
+            b.post('bad', null, function(error, data) {
+                console.log(error, data);
+                if (!error) {
+                    return done('should have failed');
+                }
+                return done();
+            })
+        })
+    })
 
     describe('#getUri', function() {
         it('should return a full url from a partial url', function() {
@@ -75,6 +111,14 @@ describe('BaseApi', function() {
             var b = new BaseApi();
             assert.strictEqual('api', b.getApiScope());
         })
-    })
+    });
+
+    describe('#log', function() {
+        it('should execute the log statement', function() {
+            var b = new BaseApi();
+            b.options.debug = true;
+            b.log('test');
+        });
+    });
 
 });

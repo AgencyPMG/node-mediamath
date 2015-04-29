@@ -29,7 +29,6 @@ ReportingApi.prototype.getListOfReports = function(options, callback) {
  * @param callback {function}
  */
 ReportingApi.prototype.getMetadataForReport = function(reportDataUrl, options, callback) {
-    options = options || {};
     this.get(reportDataUrl + '/meta', options, callback);
 }
 

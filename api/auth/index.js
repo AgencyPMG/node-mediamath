@@ -30,10 +30,6 @@ Authentication.RETRY_LIMIT = 1;
  * @return {boolean}
  */
 Authentication.prototype.isLoggedIn = function() {
-    if (!this.cookiestore) {
-        return false;
-    }
-
     return !!this.cookiestore.getCookies(
         BaseApi.defaultOptions.baseUrl
     ).length;
