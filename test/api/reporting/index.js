@@ -19,7 +19,7 @@ describe('ReportingApi', function() {
     var reports;
     before(function(done) {
         auth = new Auth(username, password);
-        reports = new ReportingApi({apiToken: token, debug: true});
+        reports = new ReportingApi({apiToken: token});
         reports.login(auth, function(error, auth) {
             if (error) {
                 return done(error);
