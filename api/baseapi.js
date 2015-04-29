@@ -18,29 +18,18 @@ var BaseApi = function(options) {
  */
 BaseApi.prototype.get = function(method, parameters, callback) {
     parameters = parameters || {};
-
-    if (parameters.auth && !parameters.auth.isLoggedIn() && parameters.auth.shouldRetryLogin()) {
-        this.login(parameters.auth, _.bind(function(error, auth) {
-            if (error) {
-                return callback(error);
-            }
-            parameters.auth = auth;
-            this.get(method, parameters, callback);
-        }, this));
-    } else {
-        var uri = util.format(
-            '%s/%s?%s',
-            this.options.baseUrl,
-            method,
-            querystring.stringify(_.omit(parameters, 'auth'))
-        )
+    this.tryLogin(parameters, _.bind(function(error, auth) {
+        if (error) {
+            return callback(error);
+        }
+        parameters.auth = auth;
+        var uri = this.getUri(method, parameters);
         request({
-            uri: uri ,
+            uri: uri,
             jar: parameters.auth ? parameters.auth.getCookiePool() : false
         }, _.bind(this.finishRequest(callback), this));
         this.log(uri);
-
-    }
+    }, this));
 }
 
 /**
@@ -52,20 +41,12 @@ BaseApi.prototype.get = function(method, parameters, callback) {
 BaseApi.prototype.post = function(method, parameters, callback) {
     parameters = parameters || {};
 
-    if (parameters.auth && !parameters.auth.isLoggedIn() && parameters.auth.shouldRetryLogin()) {
-        this.login(parameters.auth, _.bind(function(error, auth) {
-            if (error) {
-                return callback(error);
-            }
-            parameters.auth = auth;
-            this.post(method, parameters, callback);
-        }, this));
-    } else {
-        var uri = util.format(
-            '%s/%s',
-            this.options.baseUrl,
-            method
-        )
+    this.tryLogin(parameters, _.bind(function(error, auth) {
+        if (error) {
+            return callback(error);
+        }
+        parameters.auth = auth;
+        var uri = this.getUri(method);
         request({
             method: 'POST',
             uri: uri ,
@@ -73,7 +54,47 @@ BaseApi.prototype.post = function(method, parameters, callback) {
             jar: parameters.auth ? parameters.auth.getCookiePool() : false
         }, _.bind(this.finishRequest(callback), this));
         this.log(uri);
+    }, this));
+}
+
+/**
+ * Either logs in or bypasses login if no parameters.auth is available
+ * @param parameters {object} params, might include auth parameter
+ * @param callback {function} return error and an auth object
+ */
+BaseApi.prototype.tryLogin = function(parameters, callback) {
+
+    if (parameters.auth
+        && !parameters.auth.isLoggedIn()
+        && parameters.auth.shouldRetryLogin())
+    {
+        this.login(parameters.auth, function(error, auth) {
+            if (error) {
+                return callback(error);
+            }
+            callback(null, auth);
+        });
+    } else {
+        callback(null, parameters.auth);
     }
+}
+
+/**
+ * Gets a Uri based on the method and base url
+ * @access protected
+ * @param method {string} either a full url or an extension of the base url
+ * @param getparameters {object} objects that go as get request variables
+ * @return {string} a full url to use in the request
+ */
+BaseApi.prototype.getUri = function(method, getparameters) {
+    getparameters = getparameters || {};
+    var qs = querystring.stringify(_.omit(getparameters, 'auth'));
+
+    if (-1 !== method.indexOf(this.options.baseUrl)) {
+        return util.format('%s?%s', method, qs);
+    }
+
+    return util.format('%s/%s?%s', this.options.baseUrl, method, qs);
 }
 
 /**

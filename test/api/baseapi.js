@@ -58,4 +58,17 @@ describe('BaseApi', function() {
         });
     });
 
+    describe('#getUri', function() {
+        it('should return a full url from a partial url', function() {
+            var b = new BaseApi();
+            assert.strictEqual(b.options.baseUrl + '/method?', b.getUri('method'));
+        });
+
+        it('should return a full url', function() {
+            var b = new BaseApi();
+            var url = b.options.baseUrl + '/method';
+            assert.strictEqual(url + '?', b.getUri(url));
+        })
+    });
+
 });
