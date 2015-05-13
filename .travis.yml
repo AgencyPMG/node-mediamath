@@ -9,3 +9,6 @@ notifications:
 
 node_js:
   - iojs
+branches:
+  only:
+    - master

@@ -3,6 +3,10 @@
  */
 
 var util = require('util');
+var _ = require('underscore');
+var request = require('request');
+var fs = require('fs');
+
 var BaseApi = require('../baseapi');
 
 var ReportingApi = function(options) {
@@ -30,6 +34,45 @@ ReportingApi.prototype.getListOfReports = function(options, callback) {
  */
 ReportingApi.prototype.getMetadataForReport = function(reportDataUrl, options, callback) {
     this.get(reportDataUrl + '/meta', options, callback);
+}
+
+/**
+ * Gets the report data and stores it in memory
+ * @param reportDataUrl {string} the data url of the report
+ * @param options {object} additional options, including all the report options
+ * @param callback {function}
+ */
+ReportingApi.prototype.getReportData = function(reportDataUrl, options, callback) {
+    this.get(reportDataUrl, options, callback);
+}
+
+/**
+ * Gets the report data and streams it into a file
+ * @param filePath {string} the file path to store the file
+ * @param reportDataUrl {string} the data url of the report
+ * @param options {object} additional options, including all the report options
+ * @param callback {function}
+ */
+ReportingApi.prototype.streamReportToFile = function(filePath, reportDataUrl, options, callback) {
+    parameters = options || {};
+    this.tryLogin(parameters, _.bind(function(error, auth) {
+        if (error) {
+            return callback(error);
+        }
+        parameters.auth = auth;
+        var uri = this.getUri('GET', parameters);
+        request({
+            uri: uri,
+            jar: parameters.auth ? parameters.auth.getCookiePool() : false
+        })
+        .on('end', function() {
+            callback(null, filePath);
+        })
+        .on('error', callback)
+        .pipe(fs.createWriteStream(filePath));
+        this.log(uri);
+    }, this));
+
 }
 
 /**
