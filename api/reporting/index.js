@@ -60,7 +60,7 @@ ReportingApi.prototype.streamReportToFile = function(filePath, reportDataUrl, op
             return callback(error);
         }
         parameters.auth = auth;
-        var uri = this.getUri('GET', parameters);
+        var uri = this.getUri(reportDataUrl, parameters);
         request({
             uri: uri,
             jar: parameters.auth ? parameters.auth.getCookiePool() : false
