@@ -118,7 +118,7 @@ BaseApi.prototype.finishRequest = function(callback) {
             return callback('MediaMathError: ' + response.statusCode);
         }
 
-        if ('application/json' === response.headers['content-type']) {
+        if (/application\/json\; charset\=UTF-8/.test(response.headers['content-type'])) {
             try {
                 body = JSON.parse(body);
             } catch(e) {
