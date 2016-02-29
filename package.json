@@ -1,6 +1,6 @@
 {
   "name": "node-mediamath",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Node SDK for Media Math's Reporting Api",
   "main": "index.js",
   "scripts": {
